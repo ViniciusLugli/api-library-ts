@@ -18,10 +18,14 @@ export class GetAuthorUseCase {
 
     if (dto.name) {
       const authors = await this.authorRepository.findByName(dto.name);
+      if (!authors) throw new AppError("Author not found", 404);
+
       return AuthorMapper.toDTOList(authors);
     }
 
     const authors = await this.authorRepository.findAll();
+    if (!authors) throw new AppError("Author not found", 404);
+
     return AuthorMapper.toDTOList(authors);
   }
 }

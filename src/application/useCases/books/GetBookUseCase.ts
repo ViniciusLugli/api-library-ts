@@ -20,6 +20,8 @@ export class GetBookUseCase {
 
     if (dto.title) {
       const books = await this.bookRepository.findByTitle(dto.title);
+      if (books.length === 0) throw new AppError("Book not found", 404);
+
       return BookMapper.toDTOList(books);
     }
 
@@ -28,10 +30,14 @@ export class GetBookUseCase {
       if (!author) throw new AppError("Author not found", 404);
 
       const books = await this.bookRepository.findByAuthor(author);
+      if (!books) throw new AppError("Book not found", 404);
+
       return BookMapper.toDTOList(books);
     }
 
     const books = await this.bookRepository.findAll();
+    if (!books) throw new AppError("Book not found", 404);
+
     return BookMapper.toDTOList(books);
   }
 }
